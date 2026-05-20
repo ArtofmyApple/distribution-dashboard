@@ -52,6 +52,7 @@ DISTRIBUTIONS = {
     "Normal": {
         "kind": "continuous",
         "description": "Symmetric bell curve controlled by mean and standard deviation.",
+        "formula": r"f(x) = \frac{1}{\sigma\sqrt{2\pi}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)",
         "params": [
             {"name": "mu", "label": "Mean (mu)", "min": -10.0, "max": 10.0, "default": 0.0, "step": 0.1, "type": "float"},
             {"name": "sigma", "label": "Std Dev (sigma)", "min": 0.1, "max": 10.0, "default": 1.0, "step": 0.1, "type": "float"},
@@ -61,6 +62,7 @@ DISTRIBUTIONS = {
     "Uniform": {
         "kind": "continuous",
         "description": "Equal probability over [low, high].",
+        "formula": r"f(x) = \frac{1}{b - a} \quad \text{for } a \le x \le b",
         "params": [
             {"name": "low", "label": "Low", "min": -10.0, "max": 10.0, "default": 0.0, "step": 0.1, "type": "float"},
             {"name": "high", "label": "High", "min": -9.0, "max": 20.0, "default": 2.0, "step": 0.1, "type": "float"},
@@ -70,6 +72,7 @@ DISTRIBUTIONS = {
     "Exponential": {
         "kind": "continuous",
         "description": "Right-skewed waiting-time model with rate lambda.",
+        "formula": r"f(x) = \lambda e^{-\lambda x} \quad \text{for } x \ge 0",
         "params": [
             {"name": "lambda", "label": "Rate (lambda)", "min": 0.1, "max": 10.0, "default": 1.0, "step": 0.1, "type": "float"},
         ],
@@ -78,6 +81,7 @@ DISTRIBUTIONS = {
     "Beta": {
         "kind": "continuous",
         "description": "Flexible shape on [0, 1] using alpha and beta.",
+        "formula": r"f(x) = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha,\beta)} \quad \text{for } 0 \le x \le 1",
         "params": [
             {"name": "alpha", "label": "Alpha", "min": 0.2, "max": 10.0, "default": 2.0, "step": 0.1, "type": "float"},
             {"name": "beta", "label": "Beta", "min": 0.2, "max": 10.0, "default": 5.0, "step": 0.1, "type": "float"},
@@ -87,6 +91,7 @@ DISTRIBUTIONS = {
     "Gamma": {
         "kind": "continuous",
         "description": "Positive-valued skewed family with shape k and scale theta.",
+        "formula": r"f(x) = \frac{x^{k-1} e^{-x/\theta}}{\theta^k \, \Gamma(k)} \quad \text{for } x \ge 0",
         "params": [
             {"name": "k", "label": "Shape (k)", "min": 0.2, "max": 20.0, "default": 2.0, "step": 0.1, "type": "float"},
             {"name": "theta", "label": "Scale (theta)", "min": 0.1, "max": 10.0, "default": 1.5, "step": 0.1, "type": "float"},
@@ -96,6 +101,7 @@ DISTRIBUTIONS = {
     "Lognormal": {
         "kind": "continuous",
         "description": "Positive distribution where log(X) is normal.",
+        "formula": r"f(x) = \frac{1}{x \sigma \sqrt{2\pi}} \exp\left(-\frac{(\ln x - \mu)^2}{2\sigma^2}\right) \quad \text{for } x > 0",
         "params": [
             {"name": "mu", "label": "Log Mean (mu)", "min": -2.0, "max": 3.0, "default": 0.0, "step": 0.1, "type": "float"},
             {"name": "sigma", "label": "Log Std Dev (sigma)", "min": 0.1, "max": 2.5, "default": 0.5, "step": 0.05, "type": "float"},
@@ -105,6 +111,7 @@ DISTRIBUTIONS = {
     "Poisson": {
         "kind": "discrete",
         "description": "Count model with rate mu.",
+        "formula": r"P(X=k) = \frac{\mu^k e^{-\mu}}{k!} \quad \text{for } k = 0, 1, 2, \ldots",
         "params": [
             {"name": "mu", "label": "Rate (mu)", "min": 0.1, "max": 40.0, "default": 6.0, "step": 0.1, "type": "float"},
         ],
@@ -113,6 +120,7 @@ DISTRIBUTIONS = {
     "Binomial": {
         "kind": "discrete",
         "description": "Number of successes in n independent Bernoulli trials.",
+        "formula": r"P(X=k) = \binom{n}{k} p^k (1-p)^{n-k} \quad \text{for } k = 0, 1, \ldots, n",
         "params": [
             {"name": "n", "label": "Trials (n)", "min": 1, "max": 200, "default": 20, "step": 1, "type": "int"},
             {"name": "p", "label": "Success Prob (p)", "min": 0.01, "max": 0.99, "default": 0.5, "step": 0.01, "type": "float"},
@@ -122,11 +130,12 @@ DISTRIBUTIONS = {
     "PERT": {
         "kind": "continuous",
         "description": "Three-point estimate (min, mode, max) used in project planning. Built on a Beta distribution scaled to [min, max] with a shape parameter lambda that controls how strongly the mode dominates.",
+        "formula": r"\alpha = 1 + \lambda \frac{m - a}{b - a}, \quad \beta = 1 + \lambda \frac{b - m}{b - a}, \quad f(x) = \frac{(x-a)^{\alpha-1}(b-x)^{\beta-1}}{(b-a)^{\alpha+\beta-1} B(\alpha,\beta)}",
         "params": [
-            {"name": "min", "label": "Minimum", "min": -10.0, "max": 10.0, "default": 1.0, "step": 0.1, "type": "float"},
-            {"name": "mode", "label": "Most Likely (mode)", "min": -10.0, "max": 20.0, "default": 4.0, "step": 0.1, "type": "float"},
-            {"name": "max", "label": "Maximum", "min": -5.0, "max": 30.0, "default": 7.0, "step": 0.1, "type": "float"},
-            {"name": "lambda", "label": "Shape (lambda)", "min": 1.0, "max": 20.0, "default": 4.0, "step": 0.5, "type": "float"},
+            {"name": "min", "label": "Minimum", "min": -100.0, "max": 100.0, "default": 1.0, "step": 0.1, "type": "float"},
+            {"name": "mode", "label": "Most Likely (mode)", "min": -100.0, "max": 200.0, "default": 4.0, "step": 0.1, "type": "float"},
+            {"name": "max", "label": "Maximum", "min": -100.0, "max": 500.0, "default": 7.0, "step": 0.1, "type": "float"},
+            {"name": "lambda", "label": "Shape (lambda)", "min": 1.0, "max": 100.0, "default": 4.0, "step": 0.5, "type": "float"},
         ],
         "build": lambda p: _build_pert(p["min"], p["mode"], p["max"], p["lambda"]),
     },
@@ -141,31 +150,49 @@ st.write(
 with st.sidebar:
     st.header("Controls")
     dist_name = st.selectbox("Distribution", list(DISTRIBUTIONS.keys()))
+    use_number_input = st.toggle("Type-in parameter values", value=False)
     show_samples = st.toggle("Show sampled data", value=True)
     sample_size = st.slider("Sample size", 200, 20000, 3000, 200)
     seed = st.number_input("Random seed", value=42, step=1)
 
 config = DISTRIBUTIONS[dist_name]
 st.caption(config["description"])
+if "formula" in config:
+    st.latex(config["formula"])
 
 params = {}
 for p in config["params"]:
-    if p["type"] == "int":
-        params[p["name"]] = st.sidebar.slider(
-            p["label"],
-            min_value=int(p["min"]),
-            max_value=int(p["max"]),
-            value=int(p["default"]),
-            step=int(p["step"]),
-        )
+    if use_number_input:
+        if p["type"] == "int":
+            params[p["name"]] = st.sidebar.number_input(
+                p["label"],
+                value=int(p["default"]),
+                step=int(p["step"]),
+            )
+        else:
+            params[p["name"]] = st.sidebar.number_input(
+                p["label"],
+                value=float(p["default"]),
+                step=float(p["step"]),
+                format="%.2f",
+            )
     else:
-        params[p["name"]] = st.sidebar.slider(
-            p["label"],
-            min_value=float(p["min"]),
-            max_value=float(p["max"]),
-            value=float(p["default"]),
-            step=float(p["step"]),
-        )
+        if p["type"] == "int":
+            params[p["name"]] = st.sidebar.slider(
+                p["label"],
+                min_value=int(p["min"]),
+                max_value=int(p["max"]),
+                value=int(p["default"]),
+                step=int(p["step"]),
+            )
+        else:
+            params[p["name"]] = st.sidebar.slider(
+                p["label"],
+                min_value=float(p["min"]),
+                max_value=float(p["max"]),
+                value=float(p["default"]),
+                step=float(p["step"]),
+            )
 
 dist = config["build"](params)
 rng = np.random.default_rng(int(seed))
