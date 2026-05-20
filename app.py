@@ -37,6 +37,17 @@ def _discrete_x(dist):
     return np.arange(lo, hi + 1)
 
 
+def _build_pert(a, mode, b, lam):
+    """Build a PERT distribution as a scaled Beta."""
+    # Ensure valid ordering: a < mode < b
+    a, b = min(a, b - 0.2), max(b, a + 0.2)
+    mode = np.clip(mode, a + 0.01, b - 0.01)
+    r = b - a
+    alpha = 1 + lam * (mode - a) / r
+    beta = 1 + lam * (b - mode) / r
+    return stats.beta(a=alpha, b=beta, loc=a, scale=r)
+
+
 DISTRIBUTIONS = {
     "Normal": {
         "kind": "continuous",
@@ -107,6 +118,17 @@ DISTRIBUTIONS = {
             {"name": "p", "label": "Success Prob (p)", "min": 0.01, "max": 0.99, "default": 0.5, "step": 0.01, "type": "float"},
         ],
         "build": lambda p: stats.binom(n=int(p["n"]), p=p["p"]),
+    },
+    "PERT": {
+        "kind": "continuous",
+        "description": "Three-point estimate (min, mode, max) used in project planning. Built on a Beta distribution scaled to [min, max] with a shape parameter lambda that controls how strongly the mode dominates.",
+        "params": [
+            {"name": "min", "label": "Minimum", "min": -10.0, "max": 10.0, "default": 1.0, "step": 0.1, "type": "float"},
+            {"name": "mode", "label": "Most Likely (mode)", "min": -10.0, "max": 20.0, "default": 4.0, "step": 0.1, "type": "float"},
+            {"name": "max", "label": "Maximum", "min": -5.0, "max": 30.0, "default": 7.0, "step": 0.1, "type": "float"},
+            {"name": "lambda", "label": "Shape (lambda)", "min": 1.0, "max": 20.0, "default": 4.0, "step": 0.5, "type": "float"},
+        ],
+        "build": lambda p: _build_pert(p["min"], p["mode"], p["max"], p["lambda"]),
     },
 }
 

@@ -18,14 +18,7 @@ Interactive dashboard for exploring how probability distribution parameters chan
 - Lognormal
 - Poisson
 - Binomial
-
-## Setup
-```bash
-cd "/Users/blau/OneDrive - RAND Corporation/Projects/distribution-dashboard"
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+- PERT
 
 ## Run
 ```bash
